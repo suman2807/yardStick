@@ -13,28 +13,23 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the React app build (if exists)
-app.use(express.static('frontend/dist'));
-
 // Health endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Placeholder routes - will be implemented later
+// API routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/notes', require('./routes/notes'));
 app.use('/api/tenants', require('./routes/tenants'));
 
-// Serve frontend routes for SPA
-app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/frontend/dist/index.html');
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  console.error('Error:', err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  });
 });
 
 // 404 handler
@@ -44,7 +39,7 @@ app.use('*', (req, res) => {
 
 // Only listen if not running on Vercel
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }

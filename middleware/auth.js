@@ -14,7 +14,7 @@ const tenants = [
   { id: 2, name: 'Globex', slug: 'globex', plan: 'free' }
 ];
 
-// Mock data for notes
+// Mock data for notes - moved to module scope so it can be shared
 let notes = [
   { id: '1', title: 'Welcome to Acme Notes', content: 'This is a sample note for Acme tenant', tenantId: 1, userId: 1, createdAt: new Date(), updatedAt: new Date() },
   { id: '2', title: 'Team Meeting', content: 'Remember the team meeting at 2 PM', tenantId: 1, userId: 2, createdAt: new Date(), updatedAt: new Date() },
@@ -96,6 +96,11 @@ const checkNoteLimit = (req, res, next) => {
   next();
 };
 
+// Function to get all notes
+const getNotes = () => {
+  return notes;
+};
+
 // Function to update the notes array
 const updateNotes = (newNotes) => {
   notes = newNotes;
@@ -109,6 +114,6 @@ module.exports = {
   findTenantById,
   findTenantBySlug,
   countNotesByTenantId,
-  notes,
-  updateNotes // Export function to update notes
+  getNotes,
+  updateNotes
 };

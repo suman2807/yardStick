@@ -1,12 +1,13 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { authenticate, checkNoteLimit, notes, updateNotes } = require('../middleware/auth');
+const { authenticate, checkNoteLimit, getNotes, updateNotes } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Get all notes for the current tenant
 router.get('/', authenticate, (req, res) => {
   try {
+    const notes = getNotes();
     const tenantNotes = notes.filter(note => note.tenantId === req.user.tenantId);
     res.json(tenantNotes);
   } catch (error) {
@@ -18,6 +19,7 @@ router.get('/', authenticate, (req, res) => {
 // Get a specific note by ID
 router.get('/:id', authenticate, (req, res) => {
   try {
+    const notes = getNotes();
     const note = notes.find(note => 
       note.id === req.params.id && note.tenantId === req.user.tenantId
     );
@@ -36,6 +38,7 @@ router.get('/:id', authenticate, (req, res) => {
 // Create a new note
 router.post('/', authenticate, checkNoteLimit, (req, res) => {
   try {
+    const notes = getNotes();
     const { title, content } = req.body;
     
     // Validate input
@@ -67,6 +70,7 @@ router.post('/', authenticate, checkNoteLimit, (req, res) => {
 // Update a note
 router.put('/:id', authenticate, (req, res) => {
   try {
+    const notes = getNotes();
     const noteIndex = notes.findIndex(note => 
       note.id === req.params.id && note.tenantId === req.user.tenantId
     );
@@ -99,6 +103,7 @@ router.put('/:id', authenticate, (req, res) => {
 // Delete a note
 router.delete('/:id', authenticate, (req, res) => {
   try {
+    const notes = getNotes();
     const noteIndex = notes.findIndex(note => 
       note.id === req.params.id && note.tenantId === req.user.tenantId
     );
