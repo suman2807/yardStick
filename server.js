@@ -6,11 +6,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+// Use Vercel's PORT or default to 3001 for local development
 const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the React app build (if exists)
+app.use(express.static('frontend/dist'));
 
 // Health endpoint
 app.get('/health', (req, res) => {
@@ -21,6 +25,11 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/notes', require('./routes/notes'));
 app.use('/api/tenants', require('./routes/tenants'));
+
+// Serve frontend routes for SPA
+app.get('*', (req, res) => {
+  res.sendFile(__dirname + '/frontend/dist/index.html');
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -33,6 +42,11 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Only listen if not running on Vercel
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

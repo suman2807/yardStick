@@ -17,5 +17,11 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  // Add this for production build
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false
   }
 })
