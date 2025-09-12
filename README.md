@@ -84,11 +84,15 @@ Admin users can upgrade their tenant's subscription using the upgrade endpoint.
    PORT=3001
    JWT_SECRET=your_jwt_secret_key_here
    ```
-5. Start the backend server:
+5. Create a `.env` file in the `frontend` directory with the following variables:
+   ```
+   VITE_API_URL=http://localhost:3001
+   ```
+6. Start the backend server:
    ```bash
    npm start
    ```
-6. Start the frontend development server:
+7. Start the frontend development server:
    ```bash
    cd frontend
    npm run dev
@@ -109,8 +113,8 @@ Admin users can upgrade their tenant's subscription using the upgrade endpoint.
    .
    ```
 5. Add the following environment variables in Vercel:
-   - `JWT_SECRET` - Your JWT secret key
-   - `PORT` - 3001 (or let Vercel auto-assign)
+   - `JWT_SECRET` - Your JWT secret key (generate a new one for security)
+   - [PORT](file://c:\Users\suman\OneDrive\Desktop\Yardstick\server.js#L9-L9) - 3001 (or let Vercel auto-assign)
 
 ### Frontend Deployment
 
@@ -121,8 +125,8 @@ Admin users can upgrade their tenant's subscription using the upgrade endpoint.
    frontend
    ```
 4. Vercel will automatically detect the Vite project and set the correct build settings
-5. Add the following environment variables if needed:
-   - `VITE_API_URL` - Your backend API URL (when deployed)
+5. Add the following environment variables:
+   - `VITE_API_URL` - Your backend deployment URL (e.g., `https://your-backend-deployment.vercel.app`)
 
 ### Environment Variables
 
@@ -132,16 +136,23 @@ PORT=3001
 JWT_SECRET=your_jwt_secret_key_here
 ```
 
-For frontend, you can create a `.env` file in the `frontend` directory:
+For frontend, create a `.env` file in the `frontend` directory:
 ```
 VITE_API_URL=http://localhost:3001
 ```
+
+## Security Considerations
+
+- The JWT secret in the repository has been exposed and should be regenerated
+- Generate a new JWT secret using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- Never commit secrets to version control
+- Use environment variables for all sensitive information
 
 ## Project Structure
 
 ```
 yardstick-notes-app/
-├── .env                 # Environment variables
+├── .env                 # Environment variables (not committed)
 ├── server.js            # Entry point for backend
 ├── package.json         # Backend dependencies
 ├── vercel.json          # Vercel configuration for backend
@@ -151,6 +162,7 @@ yardstick-notes-app/
 ├── models/              # Data models (currently using in-memory storage)
 ├── utils/               # Utility functions
 ├── frontend/            # React frontend application
+│   ├── .env            # Frontend environment variables (not committed)
 │   ├── package.json     # Frontend dependencies
 │   ├── vercel.json      # Vercel configuration for frontend
 │   ├── vite.config.js   # Vite configuration

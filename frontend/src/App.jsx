@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// Use VITE_API_URL environment variable or default to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -28,7 +31,7 @@ function App() {
   // Fetch notes from the API
   const fetchNotes = async (authToken) => {
     try {
-      const response = await fetch('http://localhost:3001/api/notes', {
+      const response = await fetch(`${API_BASE_URL}/api/notes`, {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -53,7 +56,7 @@ function App() {
     setSuccess('');
     
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -103,7 +106,7 @@ function App() {
     }
     
     try {
-      const response = await fetch('http://localhost:3001/api/notes', {
+      const response = await fetch(`${API_BASE_URL}/api/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +134,7 @@ function App() {
   // Handle note deletion
   const handleDeleteNote = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/notes/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -155,7 +158,7 @@ function App() {
     if (!user || user.role !== 'admin') return;
     
     try {
-      const response = await fetch(`http://localhost:3001/api/tenants/${user.tenant.slug}/upgrade`, {
+      const response = await fetch(`${API_BASE_URL}/api/tenants/${user.tenant.slug}/upgrade`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
