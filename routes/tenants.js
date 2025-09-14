@@ -1,14 +1,8 @@
 const express = require('express');
-const { authenticate, authorizeAdmin, findTenantBySlug } = require('../middleware/auth');
+const { authenticate, authorizeAdmin } = require('../middleware/auth');
+const { findTenantBySlug, updateTenantPlan } = require('../data');
 
 const router = express.Router();
-
-// Mock database for demonstration
-// In a real application, this would be replaced with actual database queries
-const tenants = [
-  { id: 1, name: 'Acme', slug: 'acme', plan: 'free' },
-  { id: 2, name: 'Globex', slug: 'globex', plan: 'free' }
-];
 
 // Upgrade tenant plan endpoint (admin only)
 router.post('/:slug/upgrade', authenticate, authorizeAdmin, (req, res) => {
@@ -25,15 +19,19 @@ router.post('/:slug/upgrade', authenticate, authorizeAdmin, (req, res) => {
     }
     
     // Upgrade the plan
-    tenant.plan = 'pro';
+    const updatedTenant = updateTenantPlan(tenant.id, 'pro');
+    
+    if (!updatedTenant) {
+      return res.status(500).json({ message: 'Failed to upgrade tenant' });
+    }
     
     res.json({
       message: 'Tenant upgraded to Pro plan successfully',
       tenant: {
-        id: tenant.id,
-        name: tenant.name,
-        slug: tenant.slug,
-        plan: tenant.plan
+        id: updatedTenant.id,
+        name: updatedTenant.name,
+        slug: updatedTenant.slug,
+        plan: updatedTenant.plan
       }
     });
   } catch (error) {

@@ -1,6 +1,7 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { authenticate, checkNoteLimit, getNotes, updateNotes } = require('../middleware/auth');
+const { authenticate, checkNoteLimit } = require('../middleware/auth');
+const { getNotes, updateNotes } = require('../data');
 
 const router = express.Router();
 

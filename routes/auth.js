@@ -1,28 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { findUserByEmail } = require('../middleware/auth');
+const { findUserByEmail, findTenantById } = require('../data');
 
 const router = express.Router();
-
-// Mock database for demonstration
-// In a real application, this would be replaced with actual database queries
-const users = [
-  { id: 1, email: 'admin@acme.test', password: '$2a$10$l2QvebvRFcfHUxCUCuCqwuh040QGS.G/ikUtE6/c.761mIqlo1iFa', role: 'admin', tenantId: 1 }, // password: password
-  { id: 2, email: 'user@acme.test', password: '$2a$10$l2QvebvRFcfHUxCUCuCqwuh040QGS.G/ikUtE6/c.761mIqlo1iFa', role: 'member', tenantId: 1 }, // password: password
-  { id: 3, email: 'admin@globex.test', password: '$2a$10$l2QvebvRFcfHUxCUCuCqwuh040QGS.G/ikUtE6/c.761mIqlo1iFa', role: 'admin', tenantId: 2 }, // password: password
-  { id: 4, email: 'user@globex.test', password: '$2a$10$l2QvebvRFcfHUxCUCuCqwuh040QGS.G/ikUtE6/c.761mIqlo1iFa', role: 'member', tenantId: 2 } // password: password
-];
-
-const tenants = [
-  { id: 1, name: 'Acme', slug: 'acme', plan: 'free' },
-  { id: 2, name: 'Globex', slug: 'globex', plan: 'free' }
-];
-
-// Mock function to find tenant by ID
-const findTenantById = (id) => {
-  return tenants.find(tenant => tenant.id === id);
-};
 
 // Login endpoint
 router.post('/login', async (req, res) => {
